@@ -1,182 +1,120 @@
-const API_URL = 'https://pokeapi.co/api/v2/pokemon/';
-const searchInput = document.getElementById('search-input');
-const searchBtn = document.getElementById('search-btn');
-const resultContainer = document.getElementById('result-container');
-const historyList = document.getElementById('history-list');
-const randomContainer = document.getElementById('random-container');
-const modal = document.getElementById('modal');
-const modalBody = document.getElementById('modal-body');
+// ELEMENTS DU DOM
+const ecranNom = document.getElementById('poke-name');
+const ecranImage = document.getElementById('poke-image');
+const ecranTypes = document.getElementById('poke-types');
+const input = document.getElementById('search-input');
 
-// Couleurs par type
-const typeColors = {
-    normal: '#A8A77A', fire: '#EE8130', water: '#6390F0',
-    electric: '#F7D02C', grass: '#7AC74C', ice: '#96D9D6',
-    fighting: '#C22E28', poison: '#A33EA1', ground: '#E2BF65',
-    flying: '#A98FF3', psychic: '#F95587', bug: '#A6B91A',
-    rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC',
-    dark: '#705746', steel: '#B7B7CE', fairy: '#D685AD'
-};
+// Ecrans (Principal et Détails)
+const ecranPrincipal = document.getElementById('ui-container');
+const ecranDetails = document.getElementById('details-screen');
+const listeStats = document.getElementById('stats-list');
 
-// 1. Initialisation
-document.addEventListener('DOMContentLoaded', () => {
-    loadHistory();
-    fetchRandomPokemon(6); // Charger 6 cartes aléatoires
+// Boutons
+const btnDetails = document.getElementById('btn-details'); // VERT (A)
+const btnRetour = document.getElementById('btn-back');     // ROUGE (B)
+const btnRandom = document.getElementById('btn-random');   // CROIX
+
+// Variable pour stocker les infos du Pokemon actuel
+let currentPokemonData = null;
+
+// ========================
+// 1. RECHERCHE
+// ========================
+input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const texte = input.value.toLowerCase();
+        if(texte) chercherPokemon(texte);
+    }
 });
 
-// 2. Gestionnaire de recherche
-searchBtn.addEventListener('click', handleSearch);
-searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleSearch();
+btnRandom.addEventListener('click', () => {
+    const idHasard = Math.floor(Math.random() * 151) + 1;
+    chercherPokemon(idHasard);
 });
 
-async function handleSearch() {
-    const query = searchInput.value.trim().toLowerCase();
-    if (!query) return;
-
+async function chercherPokemon(query) {
     try {
-        resultContainer.innerHTML = '<div class="loader">Recherche en cours...</div>';
-        const data = await fetchPokemonData(query);
-        displayMainPokemon(data);
-        addToHistory(data.name);
-        searchInput.value = '';
-    } catch (error) {
-        resultContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-exclamation-circle" style="color: #ff5252"></i>
-                <p>Oups ! Pokémon introuvable.</p>
-            </div>`;
+        ecranNom.innerText = "LOADING...";
+        
+        const reponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`);
+        if (!reponse.ok) throw new Error("Introuvable");
+        const data = await reponse.json();
+
+        // On sauvegarde les données pour le bouton vert
+        currentPokemonData = data;
+
+        // Affichage Principal
+        ecranNom.innerText = data.name;
+        ecranImage.src = data.sprites.front_default;
+        const types = data.types.map(t => t.type.name.toUpperCase()).join('/');
+        ecranTypes.innerText = `TYPE: ${types}`;
+        input.value = "";
+
+        // Si on était sur l'écran détails, on revient au principal
+        masquerDetails();
+
+    } catch (e) {
+        ecranNom.innerText = "ERROR";
+        ecranTypes.innerText = "NOT FOUND";
+        ecranImage.src = ""; // Image vide
+        currentPokemonData = null;
     }
 }
 
-// 3. Appel API (Générique)
-async function fetchPokemonData(query) {
-    const response = await fetch(`${API_URL}${query}`);
-    if (!response.ok) throw new Error('Not found');
-    return await response.json();
-}
+// ========================
+// 2. GESTION DES DETAILS (BOUTONS)
+// ========================
 
-// 4. Affichage Principal (Carte HD)
-function displayMainPokemon(data) {
-    const typeMain = data.types[0].type.name;
-    const color = typeColors[typeMain];
-    const imgUrl = data.sprites.other['official-artwork'].front_default || data.sprites.front_default;
-
-    const typesHtml = data.types.map(t => 
-        `<span class="type-badge" style="background:${typeColors[t.type.name]}">${t.type.name}</span>`
-    ).join('');
-
-    // On stocke l'objet data en string pour le passer à la modale
-    const dataString = encodeURIComponent(JSON.stringify(data));
-
-    resultContainer.innerHTML = `
-        <div class="pokemon-card-large" style="--type-bg: ${color}">
-            <span class="poke-id">#${data.id.toString().padStart(3, '0')}</span>
-            <img src="${imgUrl}" alt="${data.name}" class="poke-img-large">
-            <div class="poke-info">
-                <h2 class="poke-name">${data.name}</h2>
-                <div class="types-container">${typesHtml}</div>
-                <button class="details-btn" onclick="openModal('${data.name}')">
-                    <i class="fas fa-info-circle"></i> Voir Détails
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-// 5. Historique
-function addToHistory(name) {
-    let history = JSON.parse(localStorage.getItem('pokedexHistory')) || [];
-    if (!history.includes(name)) {
-        history.unshift(name);
-        if (history.length > 5) history.pop();
-        localStorage.setItem('pokedexHistory', JSON.stringify(history));
-        loadHistory();
+// BOUTON VERT (A) : AFFICHER DETAILS
+btnDetails.addEventListener('click', () => {
+    if (currentPokemonData) {
+        afficherDetails(currentPokemonData);
     }
-}
+});
 
-function loadHistory() {
-    const history = JSON.parse(localStorage.getItem('pokedexHistory')) || [];
-    historyList.innerHTML = history.map(name => 
-        `<div class="history-tag" onclick="fetchAndDisplay('${name}')">${name}</div>`
-    ).join('');
-}
+// BOUTON ROUGE (B) : RETOUR
+btnRetour.addEventListener('click', () => {
+    masquerDetails();
+});
 
-// Fonction helper pour cliquer sur historique/random
-window.fetchAndDisplay = async (name) => {
-    searchInput.value = name;
-    handleSearch();
-};
 
-// 6. Aléatoire
-async function fetchRandomPokemon(count) {
-    randomContainer.innerHTML = '';
-    for (let i = 0; i < count; i++) {
-        const randomId = Math.floor(Math.random() * 1025) + 1;
-        try {
-            const data = await fetchPokemonData(randomId);
-            createMiniCard(data);
-        } catch (e) { console.log(e); }
-    }
-}
-
-function createMiniCard(data) {
-    const card = document.createElement('div');
-    card.className = 'mini-card';
-    card.innerHTML = `
-        <img src="${data.sprites.front_default}" alt="${data.name}">
-        <h3>${data.name}</h3>
-    `;
-    card.addEventListener('click', () => fetchAndDisplay(data.name));
-    randomContainer.appendChild(card);
-}
-
-// 7. Modale et Stats
-window.openModal = async (name) => {
-    // On refetch pour être sûr d'avoir les données ou on utilise les données déjà là
-    // Ici on refetch rapidement pour la propreté du code
-    const data = await fetchPokemonData(name);
+function afficherDetails(data) {
+    // On génère le HTML des stats
+    // HP, ATK, DEF, SPD
+    const stats = data.stats;
+    let html = '';
     
-    const typeColor = typeColors[data.types[0].type.name];
-    const statsHtml = data.stats.map(s => {
-        const val = s.base_stat;
-        const percent = Math.min((val / 200) * 100, 100); // Max stat estimée à 200
-        return `
-            <div class="stat-row">
-                <div class="stat-name">${s.stat.name.replace('special-', 'sp-')}</div>
-                <div class="stat-bar-bg">
-                    <div class="stat-bar-fill" style="width:${percent}%; background:${typeColor}"></div>
-                </div>
-                <div style="width:30px; text-align:right; font-weight:bold;">${val}</div>
+    // Petite traduction manuelle des stats
+    const nomsStats = {
+        'hp': 'PV',
+        'attack': 'ATK',
+        'defense': 'DEF',
+        'special-attack': 'S-ATK',
+        'special-defense': 'S-DEF',
+        'speed': 'VIT'
+    };
+
+    stats.forEach(s => {
+        const nom = nomsStats[s.stat.name] || s.stat.name.toUpperCase();
+        html += `
+            <div class="stat-line">
+                <span>${nom}</span>
+                <span>${s.base_stat}</span>
             </div>
         `;
-    }).join('');
+    });
 
-    modalBody.innerHTML = `
-        <div style="text-align:center;">
-            <img src="${data.sprites.other['showdown'].front_default || data.sprites.front_default}" 
-                 style="height:100px; margin-bottom:10px;">
-            <h2 style="text-transform:capitalize; color:${typeColor}">${data.name}</h2>
-            
-            <div style="display:flex; justify-content:space-around; margin: 15px 0; background:#f5f5f5; padding:10px; border-radius:10px;">
-                <div><strong>${data.height / 10} m</strong><br><small>Taille</small></div>
-                <div><strong>${data.weight / 10} kg</strong><br><small>Poids</small></div>
-            </div>
+    listeStats.innerHTML = html;
 
-            <div class="stats-container">
-                ${statsHtml}
-            </div>
-        </div>
-    `;
-    modal.style.display = 'flex';
-};
+    // On bascule les écrans
+    ecranPrincipal.classList.add('hidden');
+    ecranDetails.classList.remove('hidden');
+}
 
-// Fermer la modale
-document.querySelector('.close-btn').addEventListener('click', () => {
-    modal.style.display = 'none';
-});
+function masquerDetails() {
+    ecranDetails.classList.add('hidden');
+    ecranPrincipal.classList.remove('hidden');
+}
 
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-};
+// Initialisation
+chercherPokemon('pikachu');
