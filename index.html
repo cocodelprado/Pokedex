@@ -3,52 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex Ultimate</title>
+    <title>GameBoy Dark</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header>
-        <div class="logo-area">
-            <i class="fas fa-gamepad"></i>
-            <h1>Pokédex</h1>
-        </div>
+    <div class="gameboy">
         
-        <div class="search-wrapper">
-            <input type="text" id="search-input" placeholder="Rechercher (ex: Pikachu, 25)...">
-            <button id="search-btn"><i class="fas fa-search"></i></button>
-        </div>
-
-        <div class="history-wrapper">
-            <span>Récents :</span>
-            <div id="history-list"></div>
-        </div>
-    </header>
-
-    <main>
-        <section id="result-container">
-            <div class="empty-state">
-                <i class="fas fa-arrow-up"></i>
-                <p>Cherchez un Pokémon pour commencer l'aventure !</p>
-            </div>
-        </section>
-
-        <section class="suggestions">
-            <h2><i class="fas fa-random"></i> À découvrir</h2>
-            <div id="random-container" class="grid-container">
-                <div class="loader">Chargement...</div>
-            </div>
-        </section>
-    </main>
-
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div id="modal-body">
+        <div class="screen-area">
+            <div class="lcd-screen">
+                <div class="pixel-grid"></div>
+                
+                <div id="ui-container">
+                    <div class="sprite-wrapper">
+                        <img id="poke-image" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pokemon">
+                    </div>
+                    <div class="info-wrapper">
+                        <h2 id="poke-name">PIKACHU</h2>
+                        <p id="poke-types">TYPE: ELEC</p>
+                    </div>
+                    <input type="text" id="search-input" placeholder="TAPER + ENTREE..." autocomplete="off">
                 </div>
+
+                <div id="details-screen" class="hidden">
+                    <h3 style="text-decoration: underline; margin-bottom: 10px;">STATS</h3>
+                    <div id="stats-list">
+                        </div>
+                </div>
+
+            </div>
         </div>
+
+        <div class="controls">
+            <div class="d-pad" id="btn-random">
+                <div class="horizontal"></div>
+                <div class="vertical"></div>
+                <div class="center-d"></div>
+            </div>
+
+            <div class="action-btns">
+                <div class="btn-group">
+                    <div class="round-btn red-btn" id="btn-back"></div>
+                </div>
+                
+                <div class="btn-group">
+                    <div class="round-btn green-btn" id="btn-details"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="option-btns">
+            <div class="pill-btn"></div>
+            <div class="pill-btn"></div>
+        </div>
+
+        <div class="speaker">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+
     </div>
 
     <script src="script.js"></script>
