@@ -28,7 +28,7 @@ body {
     align-items: center;
 }
 
-/* ECRAN */
+/* ECRAN CADRE */
 .screen-area {
     background-color: #555;
     width: 100%;
@@ -43,14 +43,37 @@ body {
     align-items: center;
 }
 
+/* BATTERY LED */
+.battery-led {
+    position: absolute; top: 100px; left: 8px;
+    width: 8px; height: 8px;
+    background-color: #333; /* Eteint au début */
+    border-radius: 50%;
+    transition: background-color 0.5s;
+}
+.battery-led.on {
+    background-color: #ff0000;
+    box-shadow: 0 0 5px #ff0000;
+}
+.battery-text {
+    position: absolute; top: 112px; left: 4px;
+    font-size: 5px; color: #888; font-family: sans-serif;
+}
+
+/* LCD SCREEN (ANIMATION OUVERTURE) */
 .lcd-screen {
     background-color: #8b9c0f;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     box-shadow: inset 3px 3px 8px rgba(0,0,0,0.4);
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
     border: 2px solid #6b7c05;
+    opacity: 0; /* Eteint au début */
+    transform: scaleY(0.1);
+    transition: all 0.4s ease-out;
+}
+.lcd-screen.on {
+    opacity: 1;
+    transform: scaleY(1);
 }
 
 .pixel-grid {
@@ -59,12 +82,10 @@ body {
         linear-gradient(rgba(15, 56, 15, 0.1) 1px, transparent 1px),
         linear-gradient(90deg, rgba(15, 56, 15, 0.1) 1px, transparent 1px);
     background-size: 3px 3px;
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0.6;
+    pointer-events: none; z-index: 10; opacity: 0.6;
 }
 
-/* INTERFACE PRINCIPALE */
+/* UI */
 #ui-container {
     position: relative; z-index: 5; height: 100%;
     display: flex; flex-direction: column;
@@ -72,26 +93,6 @@ body {
     padding: 10px 0; color: #0f380f;
 }
 
-/* ECRAN DETAILS (Nouveau) */
-#details-screen {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: #8b9c0f; /* Même fond pour effet transparent */
-    z-index: 20;
-    padding: 10px;
-    color: #0f380f;
-    font-size: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.hidden { display: none !important; }
-
-.stat-line {
-    display: flex; justify-content: space-between; margin-bottom: 8px;
-    border-bottom: 1px dashed rgba(15, 56, 15, 0.3);
-}
-
-/* ELEMENTS UI */
 .sprite-wrapper {
     background: rgba(15, 56, 15, 0.05);
     border-radius: 50%;
@@ -100,8 +101,9 @@ body {
     border: 2px dashed rgba(15, 56, 15, 0.3);
 }
 #poke-image { width: 90px; height: 90px; image-rendering: pixelated; filter: grayscale(100%) contrast(1.2); }
-.info-wrapper { text-align: center; }
-#poke-name { margin: 5px 0; font-size: 14px; text-transform: uppercase; }
+
+.info-wrapper { text-align: center; height: 40px; } /* Hauteur fixe pour éviter les sauts */
+#poke-name { margin: 5px 0; font-size: 14px; text-transform: uppercase; min-height: 14px;}
 #poke-types { margin: 0; font-size: 10px; opacity: 0.8; }
 
 #search-input {
@@ -110,41 +112,55 @@ body {
     text-align: center; width: 90%; outline: none; padding: 5px;
     text-transform: uppercase;
 }
-#search-input::placeholder { color: rgba(15, 56, 15, 0.4); }
+#search-input::placeholder { color: rgba(15, 56, 15, 0.4); animation: blinkPlaceholder 1s infinite; }
 
-/* CONTROLES */
+@keyframes blinkPlaceholder { 50% { opacity: 0; } }
+
+/* DETAILS */
+#details-screen {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #8b9c0f; z-index: 20; padding: 10px;
+    color: #0f380f; font-size: 10px;
+    display: flex; flex-direction: column; justify-content: center;
+}
+.hidden { display: none !important; }
+
+.stat-line {
+    display: flex; justify-content: space-between; margin-bottom: 8px;
+    border-bottom: 1px dashed rgba(15, 56, 15, 0.3);
+    animation: slideIn 0.3s ease-out forwards;
+    opacity: 0;
+}
+/* Animation cascade pour les stats */
+.stat-line:nth-child(1) { animation-delay: 0.1s; }
+.stat-line:nth-child(2) { animation-delay: 0.2s; }
+.stat-line:nth-child(3) { animation-delay: 0.3s; }
+.stat-line:nth-child(4) { animation-delay: 0.4s; }
+.stat-line:nth-child(5) { animation-delay: 0.5s; }
+.stat-line:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* CONTROLS (Identique) */
 .controls { display: flex; justify-content: space-between; width: 90%; align-items: center; margin-bottom: 40px; }
-.d-pad { width: 90px; height: 90px; position: relative; cursor: pointer; }
+.d-pad { width: 90px; height: 90px; position: relative; cursor: pointer; transition: transform 0.1s; }
+.d-pad:active { transform: scale(0.95); }
 .horizontal, .vertical { background: #111; position: absolute; border-radius: 3px; box-shadow: 2px 2px 0 #000; }
 .horizontal { width: 100%; height: 28px; top: 31px; }
 .vertical { height: 100%; width: 28px; left: 31px; }
 .center-d { width: 28px; height: 28px; background: #111; position: absolute; top: 31px; left: 31px; }
-.d-pad:active { transform: scale(0.95); }
 
-/* BOUTONS COLORES */
 .action-btns { display: flex; gap: 15px; transform: rotate(-25deg); margin-top: 10px; }
 .round-btn {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
     box-shadow: 2px 2px 0 rgba(0,0,0,0.5), inset 3px 3px 5px rgba(255,255,255,0.3);
+    transition: transform 0.1s, box-shadow 0.1s;
 }
 .round-btn:active { transform: translate(2px, 2px); box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5); }
-
-/* BOUTON ROUGE (B - Retour) */
 .red-btn { background: #d32f2f; }
-
-/* BOUTON VERT (A - Détails) */
 .green-btn { background: #388e3c; }
 
-/* RESTE DE LA CONSOLE */
 .option-btns { display: flex; gap: 15px; margin-bottom: 40px; }
-.pill-btn {
-    width: 50px; height: 12px; background: #666; border-radius: 10px;
-    transform: rotate(-25deg); box-shadow: 1px 1px 0 #333; border: 1px solid #444;
-}
+.pill-btn { width: 50px; height: 12px; background: #666; border-radius: 10px; transform: rotate(-25deg); box-shadow: 1px 1px 0 #333; border: 1px solid #444; }
 .speaker { position: absolute; bottom: 25px; right: 25px; transform: rotate(-25deg); }
-.line {
-    width: 60px; height: 5px; background: rgba(0,0,0,0.15);
-    margin-bottom: 6px; border-radius: 5px;
-}
+.line { width: 60px; height: 5px; background: rgba(0,0,0,0.15); margin-bottom: 6px; border-radius: 5px; }
