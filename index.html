@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameBoy Dark</title>
+    <title>GameBoy Dark - Ultimate</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -12,24 +12,26 @@
     <div class="gameboy">
         
         <div class="screen-area">
-            <div class="lcd-screen">
+            
+            <div class="battery-led"></div>
+            <div class="battery-text">BATTERY</div>
+
+            <div class="lcd-screen" id="screen">
                 <div class="pixel-grid"></div>
                 
                 <div id="ui-container">
                     <div class="sprite-wrapper">
-                        <img id="poke-image" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pokemon">
+                        <img id="poke-image" src="" alt="Pokemon" style="display:none">
                     </div>
                     <div class="info-wrapper">
-                        <h2 id="poke-name">PIKACHU</h2>
-                        <p id="poke-types">TYPE: ELEC</p>
+                        <h2 id="poke-name"></h2> <p id="poke-types"></p>
                     </div>
-                    <input type="text" id="search-input" placeholder="TAPER + ENTREE..." autocomplete="off">
+                    <input type="text" id="search-input" placeholder="PRESS START..." autocomplete="off">
                 </div>
 
                 <div id="details-screen" class="hidden">
                     <h3 style="text-decoration: underline; margin-bottom: 10px;">STATS</h3>
-                    <div id="stats-list">
-                        </div>
+                    <div id="stats-list"></div>
                 </div>
 
             </div>
@@ -46,7 +48,6 @@
                 <div class="btn-group">
                     <div class="round-btn red-btn" id="btn-back"></div>
                 </div>
-                
                 <div class="btn-group">
                     <div class="round-btn green-btn" id="btn-details"></div>
                 </div>
