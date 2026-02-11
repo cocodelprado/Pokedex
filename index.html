@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameBoy Dark - Ultimate</title>
+    <title>GameBoy Color Ultimate</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -14,7 +14,7 @@
         <div class="screen-area">
             
             <div class="battery-led"></div>
-            <div class="battery-text">BATTERY</div>
+            <div class="battery-text">POWER</div>
 
             <div class="lcd-screen" id="screen">
                 <div class="pixel-grid"></div>
@@ -24,20 +24,27 @@
                         <img id="poke-image" src="" alt="Pokemon" style="display:none">
                     </div>
                     <div class="info-wrapper">
-                        <h2 id="poke-name"></h2> <p id="poke-types"></p>
+                        <h2 id="poke-name"></h2>
+                        <p id="poke-types"></p>
                     </div>
-                    <input type="text" id="search-input" placeholder="PRESS START..." autocomplete="off">
+                    <input type="text" id="search-input" placeholder="" autocomplete="off">
                 </div>
 
                 <div id="details-screen" class="hidden">
-                    <h3 style="text-decoration: underline; margin-bottom: 10px;">STATS</h3>
+                    <h3 style="text-decoration: underline; margin-bottom: 5px;">STATS</h3>
                     <div id="stats-list"></div>
                 </div>
 
             </div>
         </div>
 
-        <div class="controls">
+        <div class="gbc-logo">
+            <span style="color:#000080">Nintendo</span>
+            GAME BOY
+            <span class="color-c">C</span><span class="color-o1">O</span><span class="color-l">L</span><span class="color-o2">O</span><span class="color-r">R</span>
+        </div>
+
+        <div class="controls-group">
             <div class="d-pad" id="btn-random">
                 <div class="horizontal"></div>
                 <div class="vertical"></div>
@@ -47,25 +54,31 @@
             <div class="action-btns">
                 <div class="btn-group">
                     <div class="round-btn red-btn" id="btn-back"></div>
+                    <label>B</label>
                 </div>
                 <div class="btn-group">
                     <div class="round-btn green-btn" id="btn-details"></div>
+                    <label>A</label>
                 </div>
             </div>
         </div>
 
         <div class="option-btns">
-            <div class="pill-btn"></div>
-            <div class="pill-btn"></div>
+            <div class="pill-group">
+                <div class="pill-btn"></div>
+                <label>SELECT</label>
+            </div>
+            <div class="pill-group">
+                <div class="pill-btn"></div>
+                <label>START</label>
+            </div>
         </div>
 
         <div class="speaker">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
+            <div class="dot-hole"></div><div class="dot-hole"></div>
+            <div class="dot-hole"></div><div class="dot-hole"></div>
+            <div class="dot-hole"></div><div class="dot-hole"></div>
+            <div class="dot-hole"></div><div class="dot-hole"></div>
         </div>
 
     </div>
