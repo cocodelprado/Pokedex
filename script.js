@@ -16,17 +16,19 @@ const btnRandom = document.getElementById('btn-random');
 
 let currentPokemonData = null;
 
-// === 1. ANIMATION DE DEMARRAGE (BOOT) ===
+// === 1. ANIMATION DE DEMARRAGE RAPIDE ===
 window.addEventListener('load', () => {
+    // Délai très court avant allumage (200ms)
     setTimeout(() => {
-        screenDiv.classList.add('on'); // L'écran s'ouvre
-        batteryLed.classList.add('on'); // La LED s'allume
+        screenDiv.classList.add('on');
+        batteryLed.classList.add('on');
         
-        // Petit délai avant d'afficher le texte
+        // Texte s'affiche presque tout de suite après
         setTimeout(() => {
-            typeWriter("READY...", ecranNom);
-        }, 500);
-    }, 500);
+            typeWriter("READY", ecranNom);
+            input.placeholder = "PRESS START";
+        }, 300);
+    }, 200);
 });
 
 // === 2. FONCTIONS DE RECHERCHE ===
@@ -44,11 +46,11 @@ btnRandom.addEventListener('click', () => {
 
 async function chercherPokemon(query) {
     try {
-        ecranImage.style.display = 'none'; // On cache l'image pdt chargement
+        ecranImage.style.display = 'none';
         ecranTypes.innerText = "";
         
-        // Effet d'écriture pour le chargement
-        await typeWriter("LOADING...", ecranNom);
+        // "LOADING" très rapide
+        await typeWriter("LOAD...", ecranNom);
         
         const reponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`);
         if (!reponse.ok) throw new Error("Introuvable");
@@ -56,11 +58,10 @@ async function chercherPokemon(query) {
 
         currentPokemonData = data;
 
-        // Affichage final
         ecranImage.src = data.sprites.front_default;
-        ecranImage.style.display = 'block'; // On affiche l'image
+        ecranImage.style.display = 'block';
         
-        // Effet d'écriture pour le nom
+        // Ecriture du nom rapide
         typeWriter(data.name, ecranNom);
 
         const types = data.types.map(t => t.type.name.toUpperCase()).join('/');
@@ -72,15 +73,15 @@ async function chercherPokemon(query) {
 
     } catch (e) {
         typeWriter("ERROR 404", ecranNom);
-        ecranTypes.innerText = "NOT FOUND";
+        ecranTypes.innerText = "?";
         currentPokemonData = null;
     }
 }
 
-// === 3. EFFET MACHINE A ECRIRE (STYLE RETRO) ===
+// === 3. MACHINE A ECRIRE (VITESSE X2) ===
 function typeWriter(text, element) {
     return new Promise(resolve => {
-        element.innerText = ""; // On vide
+        element.innerText = "";
         text = text.toUpperCase();
         let i = 0;
         
@@ -88,9 +89,10 @@ function typeWriter(text, element) {
             if (i < text.length) {
                 element.innerText += text.charAt(i);
                 i++;
-                setTimeout(type, 50); // Vitesse de frappe (50ms)
+                // 25ms au lieu de 50ms -> Ecriture très rapide
+                setTimeout(type, 25); 
             } else {
-                resolve(); // On dit que c'est fini
+                resolve();
             }
         }
         type();
