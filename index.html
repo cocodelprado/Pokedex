@@ -3,49 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex Académique - Rétro Bleu</title>
+    <title>Pokédex GBC - Ultimate Edition</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="app-header">
-        <h1>POKÉDEX SYSTEM</h1>
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Nom ou ID..." aria-label="Rechercher un Pokémon">
-            <button id="search-btn">CHERCHER</button>
-        </div>
-    </header>
-
-    <div class="app-layout">
+    <div class="workspace">
         
-        <aside class="sidebar">
-            <section class="history-section">
-                <h2>HISTORIQUE</h2>
-                <ul id="history-list" class="pokemon-list">
-                    </ul>
-            </section>
+        <aside class="dashboard">
+            <div class="panel">
+                <h2 class="panel-title">📡 DONNÉES RÉCENTES</h2>
+                <ul id="history-list" class="data-list"></ul>
+            </div>
 
-            <section class="random-section">
-                <h2>DÉCOUVRIR</h2>
-                <ul id="random-list" class="pokemon-list">
-                    </ul>
-            </section>
+            <div class="panel">
+                <h2 class="panel-title">🌍 ESPÈCES SAUVAGES</h2>
+                <ul id="random-list" class="data-list"></ul>
+            </div>
         </aside>
 
-        <main class="main-content">
-            <div id="result-container" class="result-card">
-                <p class="placeholder-text">En attente de recherche...</p>
-                </div>
-        </main>
-    </div>
+        <main class="console-area">
+            <div class="gameboy">
+                
+                <div class="screen-area">
+                    <div class="battery-led"></div>
+                    <div class="battery-text">POWER</div>
 
-    <div id="pokemon-modal" class="modal hidden" aria-hidden="true">
-        <div class="modal-content">
-            <button class="close-btn" id="close-modal">&times;</button>
-            <div id="modal-body">
+                    <div class="lcd-screen" id="screen">
+                        <div class="glass-reflection"></div>
+                        <div class="pixel-grid"></div>
+                        
+                        <div id="ui-container">
+                            <div class="sprite-wrapper">
+                                <img id="poke-image" src="" alt="Pokemon" style="display:none">
+                            </div>
+                            <div class="info-wrapper">
+                                <h2 id="poke-name"></h2>
+                                <p id="poke-types"></p>
+                            </div>
+                            <input type="text" id="search-input" placeholder="RECHERCHE..." autocomplete="off">
+                        </div>
+
+                        <div id="details-screen" class="hidden">
+                            <h3>STATISTIQUES</h3>
+                            <div id="stats-list"></div>
+                        </div>
+                    </div>
                 </div>
-        </div>
+
+                <div class="gbc-logo">
+                    <span class="nintendo">Nintendo</span>
+                    GAME BOY
+                    <span class="c">C</span><span class="o1">O</span><span class="l">L</span><span class="o2">O</span><span class="r">R</span>
+                </div>
+
+                <div class="controls-group">
+                    <div class="d-pad" id="btn-random">
+                        <div class="horizontal"></div>
+                        <div class="vertical"></div>
+                        <div class="center-d"></div>
+                    </div>
+
+                    <div class="action-btns">
+                        <div class="btn-group">
+                            <div class="round-btn red-btn" id="btn-back"></div>
+                            <label>B</label>
+                        </div>
+                        <div class="btn-group">
+                            <div class="round-btn green-btn" id="btn-details"></div>
+                            <label>A</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="option-btns">
+                    <div class="pill-group">
+                        <div class="pill-btn"></div>
+                        <label>SELECT</label>
+                    </div>
+                    <div class="pill-group">
+                        <div class="pill-btn"></div>
+                        <label>START</label>
+                    </div>
+                </div>
+
+                <div class="speaker">
+                    <div class="dot-hole"></div><div class="dot-hole"></div>
+                    <div class="dot-hole"></div><div class="dot-hole"></div>
+                    <div class="dot-hole"></div><div class="dot-hole"></div>
+                    <div class="dot-hole"></div><div class="dot-hole"></div>
+                </div>
+
+            </div>
+        </main>
     </div>
 
     <script src="script.js"></script>
