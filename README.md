@@ -20,6 +20,6 @@ L'objectif principal était de manipuler une API en JavaScript (PokeAPI), et j'a
 
 Le projet fonctionne sans serveur. Il suffit de télécharger les fichiers et d'ouvrir le fichier `index.html` dans n'importe quel navigateur web.
 
-##Demo 
+##  Démo 
 
 <img width="1006" height="721" alt="Capture d’écran 2026-03-08 à 18 02 29" src="https://github.com/user-attachments/assets/2c753d5c-cd0e-4cca-9c24-622d86c2c601" />
