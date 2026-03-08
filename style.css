@@ -1,217 +1,215 @@
-/* =========================================
-   VARIABLES GLOBALES (Thème Bleu Rétro)
-   ========================================= */
-:root {
-    --bg-color: #111111;
-    --primary-blue: #00A2E8;
-    --secondary-blue: #0077AB;
-    --text-light: #FFFFFF;
-    --text-dark: #111111;
-    --screen-bg: #c4cfa1; /* Vert GameBoy */
-    --font-main: 'Press Start 2P', cursive;
-}
-
-/* =========================================
-   RESET & TYPOGRAPHIE
-   ========================================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-light);
-    font-family: var(--font-main);
-    line-height: 1.6;
-}
-
-/* =========================================
-   LAYOUT PRINCIPAL
-   ========================================= */
-.app-header {
-    background-color: var(--primary-blue);
-    padding: 20px;
-    text-align: center;
-    border-bottom: 4px solid var(--secondary-blue);
-}
-
-.app-header h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: var(--text-dark);
-}
-
-.app-layout {
-    display: flex;
-    max-width: 1200px;
-    margin: 20px auto;
-    gap: 20px;
-    padding: 0 20px;
-}
-
-.sidebar {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.main-content {
-    flex: 2;
-}
-
-/* =========================================
-   COMPOSANTS UI
-   ========================================= */
-/* Barre de recherche */
-.search-container {
+    background: radial-gradient(circle at top left, #1a2a6c, #112 40%, #000 100%);
+    font-family: 'Press Start 2P', cursive;
+    color: #fff;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
-    gap: 10px;
+    align-items: center;
 }
 
-input, button {
-    font-family: var(--font-main);
-    padding: 10px;
-    border: 2px solid var(--text-dark);
+/* === LAYOUT GENERAL === */
+.workspace {
+    display: flex;
+    gap: 50px;
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
 }
 
-input {
-    width: 60%;
-    max-width: 400px;
+/* === PANNEAU ACADEMIQUE (DASHBOARD) === */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 350px;
 }
 
-button {
-    background-color: var(--text-dark);
-    color: var(--text-light);
-    cursor: pointer;
-    transition: background 0.2s;
+.panel {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-button:hover {
-    background-color: #333;
-}
-
-/* Listes (Historique & Aléatoire) */
-.sidebar section {
-    background-color: var(--secondary-blue);
-    padding: 15px;
-    border-radius: 8px;
-    border: 2px solid var(--primary-blue);
-}
-
-.sidebar h2 {
-    font-size: 12px;
+.panel-title {
+    font-size: 10px;
+    color: #00A2E8;
     margin-bottom: 15px;
-    text-align: center;
+    border-bottom: 2px solid #00A2E8;
+    padding-bottom: 10px;
+    letter-spacing: 1px;
 }
 
-.pokemon-list {
+.data-list {
     list-style: none;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.pokemon-list li {
-    background-color: var(--screen-bg);
-    color: var(--text-dark);
-    padding: 10px;
-    font-size: 10px;
-    cursor: pointer;
+.data-list li {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 9px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    border: 2px solid var(--text-dark);
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
 }
 
-.pokemon-list li img {
+.data-list li:hover {
+    background: rgba(0, 162, 232, 0.2);
+    border-left: 3px solid #00A2E8;
+    transform: translateX(5px);
+}
+
+.data-list img {
     width: 40px;
     height: 40px;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5));
 }
 
-.pokemon-list li:hover {
-    background-color: #aebd88;
-}
-
-/* Carte Résultat */
-.result-card {
-    background-color: var(--screen-bg);
-    color: var(--text-dark);
-    padding: 40px;
-    border-radius: 8px;
-    border: 4px solid var(--primary-blue);
-    text-align: center;
-    min-height: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.pokemon-image {
-    width: 200px;
-    height: 200px;
-    image-rendering: pixelated;
-}
-
-.pokemon-name {
-    font-size: 24px;
-    margin: 20px 0;
-    text-transform: uppercase;
-}
-
-/* =========================================
-   MODALE (Fenêtre détails)
-   ========================================= */
-.modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+/* === GAMEBOY COLOR BLUE === */
+.console-area {
     display: flex;
     justify-content: center;
-    align-items: center;
-    z-index: 1000;
 }
 
-.modal.hidden {
-    display: none;
-}
-
-.modal-content {
-    background-color: var(--screen-bg);
-    color: var(--text-dark);
+.gameboy {
+    background-color: #00A2E8;
+    width: 320px;
+    height: 540px;
+    border-radius: 10px 10px 50px 50px;
+    box-shadow: 
+        inset 5px 5px 15px rgba(255,255,255,0.3),
+        inset -5px -5px 15px rgba(0,0,0,0.2),
+        15px 15px 40px rgba(0,0,0,0.7);
     padding: 20px;
-    width: 90%;
-    max-width: 500px;
-    border: 4px solid var(--primary-blue);
     position: relative;
 }
 
-.close-btn {
-    position: absolute;
-    top: 10px; right: 10px;
-    background: none;
-    border: none;
-    color: var(--text-dark);
-    font-size: 24px;
-}
-
-.stat-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
+/* ECRAN & VITRE */
+.screen-area {
+    background-color: #111;
+    height: 240px;
+    border-radius: 5px 5px 40px 40px;
+    padding: 20px 30px 40px 30px;
+    position: relative;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
     margin-bottom: 10px;
-    border-bottom: 1px dashed var(--text-dark);
 }
 
-/* =========================================
-   RESPONSIVE DESIGN (Mobile)
-   ========================================= */
-@media (max-width: 768px) {
-    .app-layout {
-        flex-direction: column;
-    }
+.battery-led {
+    position: absolute; top: 90px; left: 10px;
+    width: 8px; height: 8px; background: #333; border-radius: 50%;
+}
+.battery-led.on { background: #ff0000; box-shadow: 0 0 10px #ff0000; }
+.battery-text {
+    position: absolute; top: 105px; left: 5px;
+    font-size: 5px; color: #777; font-family: sans-serif; font-weight: bold;
+}
+
+.lcd-screen {
+    background-color: #c4cfa1;
+    width: 100%; height: 170px;
+    box-shadow: inset 3px 3px 10px rgba(0,0,0,0.5);
+    position: relative; overflow: hidden;
+    border: 2px solid #000;
+}
+
+/* LE REFLET DE LA VITRE (L'effet "Purée") */
+.glass-reflection {
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0.2) 50%,
+        rgba(255,255,255,0) 60%
+    );
+    transform: rotate(30deg);
+    pointer-events: none;
+    z-index: 50;
+}
+
+.pixel-grid {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 2px 2px; pointer-events: none; z-index: 10;
+}
+
+/* UI POKEMON */
+#ui-container {
+    position: relative; z-index: 5; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    padding: 10px 0; color: #111;
+}
+
+.sprite-wrapper { width: 80px; height: 80px; }
+#poke-image { width: 100%; height: 100%; image-rendering: pixelated; }
+
+.info-wrapper { text-align: center; }
+#poke-name { font-size: 12px; text-transform: uppercase; margin-bottom: 5px; }
+#poke-types { font-size: 8px; color: #333; }
+
+#search-input {
+    background: none; border: none; border-bottom: 2px solid #111;
+    font-family: 'Press Start 2P'; color: #111; font-size: 8px;
+    text-align: center; width: 80%; outline: none; padding: 5px;
+    text-transform: uppercase;
+}
+
+#details-screen {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #c4cfa1; z-index: 20; padding: 15px; color: #111; font-size: 9px;
+    display: flex; flex-direction: column; justify-content: center;
+}
+.hidden { display: none !important; }
+#details-screen h3 { text-align: center; margin-bottom: 10px; font-size: 10px; }
+.stat-line { display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(0,0,0,0.2); }
+
+/* BOUTONS & COQUE */
+.gbc-logo { font-family: sans-serif; font-weight: bold; font-style: italic; font-size: 12px; margin: 0 0 20px 15px; color: #000; }
+.nintendo { color: #000080; } .c { color: #d32f2f; } .o1 { color: #fbc02d; } .l { color: #0288d1; } .o2 { color: #388e3c; } .r { color: #fbc02d; }
+
+.controls-group { display: flex; justify-content: space-between; padding: 0 15px; margin-bottom: 15px; }
+.d-pad { width: 80px; height: 80px; position: relative; cursor: pointer; }
+.d-pad:active { transform: scale(0.95); }
+.horizontal, .vertical, .center-d { background: #222; position: absolute; border-radius: 2px; box-shadow: 2px 2px 0 rgba(0,0,0,0.5); }
+.horizontal { width: 100%; height: 26px; top: 27px; }
+.vertical { height: 100%; width: 26px; left: 27px; }
+.center-d { width: 26px; height: 26px; top: 27px; left: 27px; box-shadow: none; }
+
+.action-btns { display: flex; gap: 12px; transform: rotate(-15deg); margin-top: 15px; }
+.btn-group { text-align: center; }
+.btn-group label { font-family: sans-serif; font-size: 10px; font-weight: bold; color: #111; display: block; margin-top: 5px;}
+.round-btn {
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.4), inset -2px -2px 5px rgba(0,0,0,0.2);
+}
+.round-btn:active { transform: translate(2px, 2px); box-shadow: none; }
+.red-btn { background: #d32f2f; } .green-btn { background: #388e3c; }
+
+.option-btns { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; transform: rotate(-10deg); }
+.pill-group label { font-family: sans-serif; font-size: 8px; font-weight: bold; color: #111; display: block; text-align: center; margin-bottom: 5px;}
+.pill-btn { width: 45px; height: 12px; background: #555; border-radius: 10px; box-shadow: 2px 2px 0 rgba(0,0,0,0.3); border: 1px solid #333; }
+
+.speaker { position: absolute; bottom: 35px; right: 35px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; transform: rotate(-15deg); }
+.dot-hole { width: 6px; height: 6px; background: rgba(0,0,0,0.3); border-radius: 50%; box-shadow: inset 2px 2px 2px rgba(0,0,0,0.5); }
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+    .workspace { flex-direction: column-reverse; }
+    .dashboard { width: 100%; max-width: 320px; }
 }
