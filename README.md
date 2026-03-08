@@ -1,1 +1,2 @@
-# Pokedex
+# Le Pokedex à Coco !
+
