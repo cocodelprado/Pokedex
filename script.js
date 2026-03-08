@@ -1,134 +1,79 @@
-const API_URL = 'https://pokeapi.co/api/v2/pokemon/';
-let currentPokemonData = null;
+const historique = [];
+const HISTORIQUE_MAX = 3;
 
-const ecranNom = document.getElementById('poke-name');
-const ecranImage = document.getElementById('poke-image');
-const ecranTypes = document.getElementById('poke-types');
-const input = document.getElementById('search-input');
-const batteryLed = document.querySelector('.battery-led');
 
-const ecranPrincipal = document.getElementById('ui-container');
-const ecranDetails = document.getElementById('details-screen');
-const listeStats = document.getElementById('stats-list');
 
-const historyList = document.getElementById('history-list');
-const randomList = document.getElementById('random-list');
-
-const btnDetails = document.getElementById('btn-details');
-const btnRetour = document.getElementById('btn-back');
-const btnRandom = document.getElementById('btn-random');
-
-window.addEventListener('load', () => {
-    batteryLed.classList.add('on');
-    afficherHistorique();
-    genererRecommandations();
-    chercherPokemon('squirtle');
-});
-
-input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        const texte = input.value.trim().toLowerCase();
-        if(texte) chercherPokemon(texte);
-    }
-});
-
-btnRandom.addEventListener('click', () => {
-    const idHasard = Math.floor(Math.random() * 151) + 1;
-    chercherPokemon(idHasard);
-});
-
-async function chercherPokemon(query) {
-    try {
-        ecranImage.style.display = 'none';
-        ecranNom.innerText = "LOAD...";
-        ecranTypes.innerText = "";
-        
-        const response = await fetch(`${API_URL}${query}`);
-        if (!response.ok) throw new Error("Erreur");
-        
-        const data = await response.json();
-        currentPokemonData = data;
-        
-        ecranImage.src = data.sprites.front_default;
-        ecranImage.style.display = 'block';
-        ecranNom.innerText = data.name;
-        
-        const types = data.types.map(t => t.type.name.toUpperCase()).join('/');
-        ecranTypes.innerText = `TYPE: ${types}`;
-        
-        input.value = "";
-        masquerDetails();
-        
-        ajouterHistorique(data.name, data.sprites.front_default);
-
-    } catch (e) {
-        ecranNom.innerText = "ERREUR 404";
-        ecranTypes.innerText = "";
-        currentPokemonData = null;
-    }
-}
-
-function ajouterHistorique(name, spriteUrl) {
-    let historique = JSON.parse(localStorage.getItem('gbcHistory')) || [];
-    if (historique.length === 0 || historique[0].name !== name) {
-        historique.unshift({ name, spriteUrl });
-        if (historique.length > 5) historique.pop();
-        localStorage.setItem('gbcHistory', JSON.stringify(historique));
-        afficherHistorique();
-    }
-}
-
-function afficherHistorique() {
-    const historique = JSON.parse(localStorage.getItem('gbcHistory')) || [];
-    historyList.innerHTML = '';
-    historique.forEach(pokemon => {
-        const li = document.createElement('li');
-        li.innerHTML = `<img src="${pokemon.spriteUrl}"> <span>${pokemon.name.toUpperCase()}</span>`;
-        li.addEventListener('click', () => chercherPokemon(pokemon.name));
-        historyList.appendChild(li);
-    });
-}
-
-async function genererRecommandations() {
-    randomList.innerHTML = '<li style="justify-content:center;">Chargement...</li>';
-    try {
-        const promises = [];
-        for (let i = 0; i < 5; i++) {
-            const randomId = Math.floor(Math.random() * 151) + 1;
-            promises.push(fetch(`${API_URL}${randomId}`).then(res => res.json()));
+// Fonction de recherche de Pokémon
+function searchPokemon() {
+    // Dans la constante de récupération de valeur on ajoute des méthodes pour éviter les erreurs de saisie
+    const searchInput = document.getElementById('searchInput').value.toLowerCase().trim();
+    const resultContainer = document.getElementById('resultContainer');
+  
+ 
+    
+// Fetch pour récupérer les données de l'API Pokémon
+    if (searchInput) {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${searchInput}`)
+            .then(response => {
+                if (!response.ok) { // Si l'API ne renvoie pas une valeur correcte, on affiche une erreur
+                    throw new Error('Pokémon non trouvé');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const pokemonName = data.name; // Nom du Pokémon
+                const pokemonImage = data.sprites.front_default; // Image du Pokémon
+                const pokemonTypes = data.types.map(typeInfo => typeInfo.type.name).join(', '); // Types du Pokémon
+                const pokemonHeight = data.height; // Hauteur du Pokémon
+                const pokemonWeight = data.weight; // Poids du Pokémon
+                document.getElementById('logo').style.opacity = "0.4"; // Pour que le logo soit moins visible pendant la recherche
+                document.getElementById('footer').style.opacity = "0"; // Rendre le footer invisible pendant la recherche
+                ajouterHistorique(pokemonName); // On ajoute le nom du Pokémon à l'historique
+                
+                
+                resultContainer.innerHTML = `
+                <div class="pokemon-card">
+                    <h2 class="pokemon-name">${pokemonName}</h2>
+                    <img class="pokemon-image" src="${pokemonImage}" alt="${pokemonName}">
+                    <p class="pokemon-types">Types: ${pokemonTypes}</p>
+                    <p class="pokemon-height">Hauteur: ${pokemonHeight/10}cm</p>
+                    <p class="pokemon-weight">Poids: ${pokemonWeight/10}kg</p>
+                    <div class="pokemon-stats">
+                    <h3>Stats</h3>
+                    <ul>
+                        ${data.stats.map(statInfo => `<li>${statInfo.stat.name}: ${statInfo.base_stat}</li>`).join('')} 
+                    </ul>
+                    </div>
+                    </div>
+    `;       })    //On injecte les valeurs du Pokémon directement dans le HTML + Structure des stats spéciale
+            .catch(error => {
+                resultContainer.innerHTML = `<p>${error.message}</p>`; // Lorsqu'il y a un .then, il y a forcément un .catch
+            });
+    } else {
+        alert('Veuillez entrer le nom d\'un Pokémon'); // Si l'utilisateur n'entre rien, on affiche une alerte
         }
-        const randomPokemons = await Promise.all(promises);
-        randomList.innerHTML = '';
-        randomPokemons.forEach(data => {
-            const li = document.createElement('li');
-            li.innerHTML = `<img src="${data.sprites.front_default}"> <span>${data.name.toUpperCase()}</span>`;
-            li.addEventListener('click', () => chercherPokemon(data.name));
-            randomList.appendChild(li);
-        });
-    } catch (error) {
-        randomList.innerHTML = '<li>Erreur de réseau</li>';
-    }
 }
+// Méthode pour lancer la recherche avec le clique de la souris ou la touche "Entrée" du clavier
+const searchButton = document.getElementById('searchButton');
+const searchInput = document.getElementById('searchInput');
 
-btnDetails.addEventListener('click', () => {
-    if (currentPokemonData) afficherDetails(currentPokemonData);
+searchButton.addEventListener('click', searchPokemon);
+searchInput.addEventListener('keypress', function (event) {
+  if (event.key === 'Enter') {
+    searchPokemon();
+  }
 });
 
-btnRetour.addEventListener('click', () => masquerDetails());
+// Ajout du Pokémon à l'historique 
+function ajouterHistorique(pokemonName) {
+    historique.push(pokemonName); // On ajoute le nom du Pokémon à l'historique
+    const historiqueContainer = document.getElementById('historiqueContainer');
+    historiqueContainer.innerHTML = '<h3>Historique des recherches :</h3><ul>' +
+        historique.map(name => `<li>${name}</li>`).join('') + // On affiche l'historique des recherches sous forme de liste
+        '</ul>';
+    if (historique.length > HISTORIQUE_MAX) { // Si l'historique dépasse la limite, on supprime les plus anciens
+        historique.length = 0;
+        localStorage.removeItem('historique');
+    }
 
-function afficherDetails(data) {
-    const nomsStats = {'hp':'PV', 'attack':'ATK', 'defense':'DEF', 'special-attack':'S-ATK', 'special-defense':'S-DEF', 'speed':'VIT'};
-    let html = '';
-    data.stats.forEach(s => {
-        const nom = nomsStats[s.stat.name] || s.stat.name.toUpperCase();
-        html += `<div class="stat-line"><span>${nom}</span><span>${s.base_stat}</span></div>`;
-    });
-    listeStats.innerHTML = html;
-    ecranPrincipal.classList.add('hidden');
-    ecranDetails.classList.remove('hidden');
-}
-
-function masquerDetails() {
-    ecranDetails.classList.add('hidden');
-    ecranPrincipal.classList.remove('hidden');
 }
